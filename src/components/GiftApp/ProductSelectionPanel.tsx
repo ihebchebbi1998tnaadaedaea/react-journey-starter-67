@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import CategoriesDisplay from './components/CategoriesDisplay';
 import ProductGrid from './components/ProductGrid';
 import { useIsMobile } from '@/hooks/use-mobile';
+import AddItemDialog from './dialogs/AddItemDialog';
+import { playTickSound } from '@/utils/audio';
+import { toast } from '@/hooks/use-toast';
 
 interface ProductSelectionPanelProps {
   onItemDrop: (item: Product) => void;
@@ -24,6 +27,10 @@ const ProductSelectionPanel = ({
 }: ProductSelectionPanelProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [selectedSize, setSelectedSize] = useState('');
+  const [personalization, setPersonalization] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const itemsPerPage = 4;
   const isMobile = useIsMobile();
 
@@ -118,7 +125,34 @@ const ProductSelectionPanel = ({
 
   const handleProductSelect = (product: Product) => {
     if (isMobile) {
-      onItemDrop(product);
+      setSelectedProduct(product);
+      setShowAddDialog(true);
+      playTickSound();
+    }
+  };
+
+  const handleConfirm = () => {
+    if (selectedProduct && selectedSize) {
+      const productWithSize = {
+        ...selectedProduct,
+        size: selectedSize,
+        personalization: personalization
+      };
+      onItemDrop(productWithSize);
+      setShowAddDialog(false);
+      setSelectedSize('');
+      setPersonalization('');
+      setSelectedProduct(null);
+      toast({
+        title: "Article ajouté au pack",
+        description: "L'article a été ajouté avec succès à votre pack cadeau",
+        style: {
+          backgroundColor: '#700100',
+          color: 'white',
+          border: '1px solid #590000',
+        },
+        duration: 3000,
+      });
     }
   };
 
@@ -172,6 +206,17 @@ const ProductSelectionPanel = ({
           </Button>
         </div>
       </div>
+
+      <AddItemDialog
+        open={showAddDialog}
+        onOpenChange={setShowAddDialog}
+        droppedItem={selectedProduct}
+        selectedSize={selectedSize}
+        personalization={personalization}
+        onSizeSelect={setSelectedSize}
+        onPersonalizationChange={setPersonalization}
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 };
