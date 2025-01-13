@@ -7,6 +7,7 @@ import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import CategoriesDisplay from './components/CategoriesDisplay';
 import ProductGrid from './components/ProductGrid';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ProductSelectionPanelProps {
   onItemDrop: (item: Product) => void;
@@ -24,6 +25,7 @@ const ProductSelectionPanel = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
+  const isMobile = useIsMobile();
 
   // Get available categories based on pack type and container index
   const getAvailableCategories = () => {
@@ -114,6 +116,12 @@ const ProductSelectionPanel = ({
     event.dataTransfer.setData('product', JSON.stringify(product));
   };
 
+  const handleProductSelect = (product: Product) => {
+    if (isMobile) {
+      onItemDrop(product);
+    }
+  };
+
   return (
     <div className="bg-white/90 backdrop-blur-lg rounded-xl shadow-xl p-6 border border-white/20 h-[90%] flex flex-col">
       <div className="space-y-6 flex-1 flex flex-col">
@@ -137,6 +145,7 @@ const ProductSelectionPanel = ({
         <ProductGrid 
           products={paginatedProducts}
           onDragStart={handleDragStart}
+          onProductSelect={handleProductSelect}
         />
 
         <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
