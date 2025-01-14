@@ -37,6 +37,15 @@ const ProductSelectionPanel = ({
   // Get available categories based on pack type and container index
   const getAvailableCategories = () => {
     switch (packType) {
+      case 'Pack Prestige':
+        if (selectedContainerIndex === 0) {
+          return [{ label: 'Chemises', type: 'itemgroup', value: 'chemises' }];
+        } else if (selectedContainerIndex === 1) {
+          return [{ label: 'Ceintures', type: 'itemgroup', value: 'ceintures' }];
+        } else if (selectedContainerIndex === 2) {
+          return [{ label: 'Cravates', type: 'itemgroup', value: 'cravates' }];
+        }
+        return [];
       case 'Pack Chemise':
         return [{ label: 'Chemises', type: 'itemgroup', value: 'chemises' }];
       case 'Pack Prestige':
@@ -83,33 +92,34 @@ const ProductSelectionPanel = ({
       
       if (categories.length > 0) {
         filteredProducts = data.filter(product => {
-          // For chemises, only show men's shirts
-          if (product.itemgroup_product === 'chemises') {
-            return product.category_product === 'homme';
-          }
-
-          // Special handling for Pack Chemise - only show men's chemises
-          if (packType === 'Pack Chemise') {
-            return product.itemgroup_product === 'chemises' && product.category_product === 'homme';
-          }
-
-          // Check if we should filter out chemises for Pack Prestige
-          if (packType === 'Pack Prestige' && selectedContainerIndex === 0) {
-            const hasChemise = selectedItems.some(item => item.itemgroup_product === 'chemises');
-            if (hasChemise && product.itemgroup_product === 'chemises') {
-              return false;
+          // For Pack Prestige, enforce specific category requirements
+          if (packType === 'Pack Prestige') {
+            // First slot: only men's shirts
+            if (selectedContainerIndex === 0) {
+              return product.itemgroup_product === 'chemises' && 
+                     product.category_product === 'homme' &&
+                     !selectedItems.some(item => item.itemgroup_product === 'chemises');
             }
-            // Only show men's chemises for Pack Prestige
-            if (product.itemgroup_product === 'chemises') {
-              return product.category_product === 'homme';
+            // Second slot: only belts
+            if (selectedContainerIndex === 1) {
+              return product.itemgroup_product === 'ceintures' &&
+                     !selectedItems.some(item => item.itemgroup_product === 'ceintures');
+            }
+            // Third slot: only ties
+            if (selectedContainerIndex === 2) {
+              return product.itemgroup_product === 'cravates' &&
+                     !selectedItems.some(item => item.itemgroup_product === 'cravates');
             }
           }
 
+          // For other cases, check against the available categories
           return categories.some(category => {
             if (category.type === 'itemgroup') {
+              if (category.value === 'chemises') {
+                return product.itemgroup_product === category.value && 
+                       product.category_product === 'homme';
+              }
               return product.itemgroup_product === category.value;
-            } else if (category.type === 'type') {
-              return product.type_product === category.value;
             }
             return false;
           });
