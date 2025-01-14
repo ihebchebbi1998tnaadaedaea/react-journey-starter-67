@@ -39,7 +39,7 @@ const ProductSelectionPanel = ({
     switch (packType) {
       case 'Pack Prestige':
         if (selectedContainerIndex === 0) {
-          return [{ label: 'Chemises', type: 'itemgroup', value: 'chemises' }];
+          return [{ label: 'Chemises Homme', type: 'itemgroup', value: 'chemises' }];
         } else if (selectedContainerIndex === 1) {
           return [{ label: 'Ceintures', type: 'itemgroup', value: 'ceintures' }];
         } else if (selectedContainerIndex === 2) {
@@ -48,10 +48,6 @@ const ProductSelectionPanel = ({
         return [];
       case 'Pack Chemise':
         return [{ label: 'Chemises', type: 'itemgroup', value: 'chemises' }];
-      case 'Pack Prestige':
-        return selectedContainerIndex === 0 
-          ? [{ label: 'Chemises', type: 'itemgroup', value: 'chemises' }]
-          : [{ label: 'Accessoires', type: 'type', value: 'accessoires' }];
       case 'Pack Premium':
         return selectedContainerIndex === 0
           ? [{ label: 'Cravates', type: 'itemgroup', value: 'cravates' }]
@@ -87,11 +83,14 @@ const ProductSelectionPanel = ({
     queryKey: ['products', packType, selectedContainerIndex, selectedItems],
     queryFn: fetchAllProducts,
     select: (data) => {
+      console.log('Raw products data:', data); // Debug log
       let filteredProducts = data;
       const categories = getAvailableCategories();
       
       if (categories.length > 0) {
         filteredProducts = data.filter(product => {
+          console.log('Checking product:', product); // Debug log
+          
           // For Pack Prestige, enforce specific category requirements
           if (packType === 'Pack Prestige') {
             // First slot: only men's shirts
@@ -102,8 +101,10 @@ const ProductSelectionPanel = ({
             }
             // Second slot: only belts
             if (selectedContainerIndex === 1) {
-              return product.itemgroup_product === 'ceintures' &&
-                     !selectedItems.some(item => item.itemgroup_product === 'ceintures');
+              const isBelt = product.itemgroup_product === 'ceintures';
+              const notAlreadySelected = !selectedItems.some(item => item.itemgroup_product === 'ceintures');
+              console.log('Is belt:', isBelt, 'Not already selected:', notAlreadySelected); // Debug log
+              return isBelt && notAlreadySelected;
             }
             // Third slot: only ties
             if (selectedContainerIndex === 2) {
@@ -126,6 +127,7 @@ const ProductSelectionPanel = ({
         });
       }
 
+      // Apply search filter after category filtering
       return filteredProducts.filter(product => 
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
