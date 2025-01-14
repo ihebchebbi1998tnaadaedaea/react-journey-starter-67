@@ -1,42 +1,17 @@
 import React, { useState, useEffect } from "react";
 
 const BrandLocation = () => {
-  const location1URL = "https://www.google.com/maps/place/Rue+du+Lac+Tib%C3%A9riade,+Tunis/@36.837248,10.2380523,17z/data=!3m1!4b1!4m6!3m5!1s0x12fd35411ec4cf69:0x4b114dea5d7e48b1!8m2!3d36.8372437!4d10.2406272!16s%2Fg%2F1w0dk3ds?entry=ttu&g_ep=EgoyMDI1MDEwMi4wIKXMDSoASAFQAw%3D%3D";
-  const location2URL = "https://www.google.com/maps/place/Tunisia+mall+1/@36.8470569,10.2666298,552m/data=!3m2!1e3!4b1!4m6!3m5!1s0x12fd4b942dc61765:0xd2d385560445a08d!8m2!3d36.8470569!4d10.2692047!16s%2Fg%2F11v18xkmzp?entry=ttu&g_ep=EgoyMDI1MDEwMi4wIKXMDSoASAFQAw%3D%3D";
+  const location1URL = "https://www.google.com/maps/place/Fiori+Les+Berges+du+Lac/@36.8416296,10.2573344,17z/data=!3m1!4b1!4m6!3m5!1s0x12fd346735b36717:0xf853633460773436!8m2!3d36.8416296!4d10.2599093!16s%2Fg%2F11t82r9jb1?entry=ttu&g_ep=EgoyMDI1MDEwMi4wIKXMDSoASAFQAw%3D%3D";
 
+  const [showThankYou, setShowThankYou] = useState(false);
   const [newReview, setNewReview] = useState({
     text: "",
     user: ""
   });
 
-  const [showThankYou, setShowThankYou] = useState(false);
-  const [feedbacks, setFeedbacks] = useState([
-    {
-      id: 1,
-      text: "Merci pour tout et bonne continuation et je vous assure que je serai une cliente fidèle chez vous parce que j'ai adoré tout",
-      user: "Client 1",
-    },
-    {
-      id: 2,
-      text: "Service exceptionnel et ambiance agréable, je reviendrai avec plaisir !",
-      user: "Client 2",
-    },
-    {
-      id: 3,
-      text: "Très satisfait de mon expérience, je recommande vivement.",
-      user: "Client 3",
-    },
-  ]);
-
-  const [currentFeedback, setCurrentFeedback] = useState(0);
-
   const handleSubmitReview = (e) => {
     e.preventDefault();
     if (newReview.text && newReview.user) {
-      setFeedbacks([...feedbacks, {
-        id: feedbacks.length + 1,
-        ...newReview
-      }]);
       setNewReview({ text: "", user: "" });
       setShowThankYou(true);
       setTimeout(() => {
@@ -44,15 +19,6 @@ const BrandLocation = () => {
       }, 4000);
     }
   };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentFeedback((prevFeedback) =>
-        prevFeedback === feedbacks.length - 1 ? 0 : prevFeedback + 1
-      );
-    }, 7000);
-    return () => clearInterval(interval);
-  }, [feedbacks.length]);
 
   return (
     <section className="py-6 lg:py-12 bg-gray-50">
@@ -63,8 +29,9 @@ const BrandLocation = () => {
           </h1>
         </div>
 
-        <div className="w-[95%] flex flex-wrap gap-6 mb-8 justify-center">
-          <div className="w-[47%] min-w-[300px]"> {/* Adjusted from 45% to 47% for better fit */}
+        <div className="w-[95%] flex flex-wrap gap-6 justify-center">
+          {/* Location 1 Card */}
+          <div className="w-[47%] min-w-[300px]">
             <a href={location1URL} target="_blank" rel="noopener noreferrer">
               <div className="relative overflow-hidden rounded-lg h-[340px] group hover:shadow-lg transition-all">
                 <img src="Thestore.png" alt="Fiori Les Berges du Lac" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
@@ -76,50 +43,11 @@ const BrandLocation = () => {
               </div>
             </a>
           </div>
-          <div className="w-[47%] min-w-[300px]"> {/* Adjusted from 45% to 47% for better fit */}
-            <a href={location2URL} target="_blank" rel="noopener noreferrer">
-              <div className="relative overflow-hidden rounded-lg h-[340px] group hover:shadow-lg transition-all">
-                <img src="Thestand.png" alt="Fiori Tunisia Mall" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                <div className="absolute bottom-0 left-0 right-0 p-3 text-white bg-[#591C1C]/90">
-                  <p className="text-lg font-['WomanFontBold']">
-                    Tunisia mall,Les Berges Du Lac II
-                  </p>
-                </div>
-              </div>
-            </a>
-          </div>
-        </div>
 
-        <div className="w-[93%] flex flex-wrap gap-6 items-stretch justify-center">
-          <div className="w-[47%] min-w-[300px] bg-[#591C1C] rounded-lg p-6 text-white"> {/* Adjusted from 45% to 47% */}
-          <br></br>
-          <br></br>
-          <br></br>
-            <div className="text-center">
-              <h2 className="text-3xl mb-6 font-['WomanFontBold']">Feedbacks</h2>
-              <div className="glass-effectFeedback bg-white/10 rounded-lg p-5 mb-6">
-                <div className="min-h-[100px] flex flex-col justify-center">
-                  <p className="text-xl mb-3 leading-relaxed">{feedbacks[currentFeedback].text}</p>
-                  <p className="text-lg italic">- {feedbacks[currentFeedback].user}</p>
-                </div>
-              </div>
-              <div className="flex justify-center gap-3">
-                {feedbacks.map((_, index) => (
-                  <button
-                    key={index}
-                    className={`w-2.5 h-2.5 rounded-full transition-all ${
-                      currentFeedback === index ? "bg-white scale-125" : "bg-white/50"
-                    }`}
-                    onClick={() => setCurrentFeedback(index)}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="w-[47%] min-w-[300px] bg-white rounded-lg p-6 shadow-lg"> {/* Adjusted from 45% to 47% */}
+          {/* Review Form Card */}
+          <div className="w-[47%] min-w-[300px]">
             {showThankYou ? (
-              <div className="h-full flex items-center justify-center">
+              <div className="bg-white rounded-xl p-5 h-full flex items-center justify-center">
                 <div className="text-center">
                   <div className="mb-4">
                     <svg className="mx-auto h-14 w-14 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -172,7 +100,7 @@ const BrandLocation = () => {
                                focus:outline-none focus:ring-2 focus:ring-[#591C1C]/20
                                placeholder:text-gray-400
                                h-32 resize-none"
-                      placeholder="Partagez votre expérience avec nous..."
+                      placeholder="Partagez votre expérience avec nous"
                       required
                     />
                   </div>

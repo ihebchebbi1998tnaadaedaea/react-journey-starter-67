@@ -25,7 +25,7 @@ const GiftCollection = () => {
           <a
             key={index}
             href={item.href}
-            className="relative w-[calc(50%-8px)] sm:w-[calc((95%-32px)/5)] last:sm:w-[calc((95%-32px)/5)] last:w-[calc(50%-8px)]"
+            className="relative w-[80%] sm:w-[calc((95%-32px)/5)] last:sm:w-[calc((95%-32px)/5)] last:w-[80%] sm:w-[calc(50%-8px)]"
             style={{
               height: "430px",
               background: "#fff",

@@ -13,7 +13,7 @@ import { playTickSound } from '@/utils/audio';
 import { toast } from '@/hooks/use-toast';
 
 interface ProductSelectionPanelProps {
-  onItemDrop: (item: Product) => void;
+  onItemDrop: (item: Product, size: string, personalization: string) => void;
   packType: string;
   selectedContainerIndex: number;
   selectedItems: Product[];
@@ -42,27 +42,33 @@ const ProductSelectionPanel = ({
       case 'Pack Prestige':
         return selectedContainerIndex === 0 
           ? [{ label: 'Chemises', type: 'itemgroup', value: 'chemises' }]
-          : [{ label: 'Accessoires', type: 'type', value: 'Accessoires' }];
+          : [{ label: 'Accessoires', type: 'type', value: 'accessoires' }];
       case 'Pack Premium':
         return selectedContainerIndex === 0
-          ? [{ label: 'Cravates', type: 'itemgroup', value: 'Cravates' }]
-          : [{ label: 'Accessoires', type: 'type', value: 'Accessoires' }];
+          ? [{ label: 'Cravates', type: 'itemgroup', value: 'cravates' }]
+          : [{ label: 'Accessoires', type: 'type', value: 'accessoires' }];
       case 'Pack Trio':
         if (selectedContainerIndex === 0) {
-          return [{ label: 'Portefeuilles', type: 'itemgroup', value: 'Portefeuilles' }];
+          return [{ label: 'Portefeuilles', type: 'itemgroup', value: 'cortefeuilles' }];
         } else if (selectedContainerIndex === 1) {
-          return [{ label: 'Ceintures', type: 'itemgroup', value: 'Ceintures' }];
+          return [{ label: 'Ceintures', type: 'itemgroup', value: 'ceintures' }];
         } else {
-          return [{ label: 'Accessoires', type: 'type', value: 'Accessoires' }];
+          return [{ label: 'Accessoires', type: 'type', value: 'accessoires' }];
         }
       case 'Pack Duo':
         return selectedContainerIndex === 0
-          ? [{ label: 'Portefeuilles', type: 'itemgroup', value: 'Portefeuilles' }]
-          : [{ label: 'Ceintures', type: 'itemgroup', value: 'Ceintures' }];
+          ? [{ label: 'Portefeuilles', type: 'itemgroup', value: 'cortefeuilles' }]
+          : [{ label: 'Ceintures', type: 'itemgroup', value: 'ceintures' }];
       case 'Pack Mini Duo':
         return selectedContainerIndex === 0
-          ? [{ label: 'Porte-cartes', type: 'itemgroup', value: 'Porte-cartes' }]
-          : [{ label: 'Porte-clés', type: 'itemgroup', value: 'Porte-clés' }];
+          ? [{ label: 'Porte-cartes', type: 'itemgroup', value: 'porte-cartes' }]
+          : [{ label: 'Porte-clés', type: 'itemgroup', value: 'porte-cles' }];
+      case 'Pack Ceinture':
+        return [{ label: 'Ceintures', type: 'itemgroup', value: 'ceintures' }];
+      case 'Pack Cravatte':
+        return [{ label: 'Cravates', type: 'itemgroup', value: 'cravates' }];
+      case 'Pack Malette':
+        return [{ label: 'Mallettes', type: 'itemgroup', value: 'mallettes' }];
       default:
         return [];
     }
@@ -138,7 +144,7 @@ const ProductSelectionPanel = ({
         size: selectedSize,
         personalization: personalization
       };
-      onItemDrop(productWithSize);
+      onItemDrop(productWithSize, selectedSize, personalization);
       setShowAddDialog(false);
       setSelectedSize('');
       setPersonalization('');
