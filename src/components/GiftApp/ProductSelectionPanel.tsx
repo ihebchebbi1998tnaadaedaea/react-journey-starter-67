@@ -101,10 +101,9 @@ const ProductSelectionPanel = ({
             }
             // Second slot: only belts
             if (selectedContainerIndex === 1) {
-              const isBelt = product.itemgroup_product === 'ceintures';
-              const notAlreadySelected = !selectedItems.some(item => item.itemgroup_product === 'ceintures');
-              console.log('Is belt:', isBelt, 'Not already selected:', notAlreadySelected); // Debug log
-              return isBelt && notAlreadySelected;
+              console.log('Checking belt product:', product.itemgroup_product); // Debug log
+              return product.itemgroup_product === 'ceintures' &&
+                     !selectedItems.some(item => item.itemgroup_product === 'ceintures');
             }
             // Third slot: only ties
             if (selectedContainerIndex === 2) {
