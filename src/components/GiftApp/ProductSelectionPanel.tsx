@@ -83,9 +83,14 @@ const ProductSelectionPanel = ({
       
       if (categories.length > 0) {
         filteredProducts = data.filter(product => {
-          // Special handling for Pack Chemise - only show chemises
+          // For chemises, only show men's shirts
+          if (product.itemgroup_product === 'chemises') {
+            return product.category_product === 'homme';
+          }
+
+          // Special handling for Pack Chemise - only show men's chemises
           if (packType === 'Pack Chemise') {
-            return product.itemgroup_product === 'chemises';
+            return product.itemgroup_product === 'chemises' && product.category_product === 'homme';
           }
 
           // Check if we should filter out chemises for Pack Prestige
@@ -94,13 +99,9 @@ const ProductSelectionPanel = ({
             if (hasChemise && product.itemgroup_product === 'chemises') {
               return false;
             }
-          }
-
-          // Check if we should filter out cravates for Pack Premium
-          if (packType === 'Pack Premium' && selectedContainerIndex === 0) {
-            const hasCravate = selectedItems.some(item => item.itemgroup_product === 'Cravates');
-            if (hasCravate && product.itemgroup_product === 'Cravates') {
-              return false;
+            // Only show men's chemises for Pack Prestige
+            if (product.itemgroup_product === 'chemises') {
+              return product.category_product === 'homme';
             }
           }
 
